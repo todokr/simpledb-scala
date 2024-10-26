@@ -3,7 +3,7 @@ package simpledb.filemanagement
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
-class Page(bb: ByteBuffer) {
+class Page private (bb: ByteBuffer) {
   import Page.Charset
 
   def getInt(offset: Int): Int = bb.getInt(offset)
@@ -44,7 +44,7 @@ object Page {
   private val Charset = StandardCharsets.US_ASCII
 
   /** A constractor for creating data buffers */
-  def apply(blockSize: Int): Page = {
+  private[filemanagement] def apply(blockSize: Int): Page = {
     val bb = ByteBuffer.allocateDirect(blockSize)
     new Page(bb)
   }
