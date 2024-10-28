@@ -39,14 +39,17 @@ class FileManagerTest extends munit.FunSuite {
     val fileManager = FileManager(dbDir, 1024)
     val blockId = BlockId("test-a", 0)
     val page = Page(256)
-    page.setInt(0, 42)
-//    page.setString(4, "hello")
+    page.setInt(0, Int.MaxValue)
+    page.setString(4, "hello world")
+    page.setBytes(19, Array[Byte](1, 2, 3, 4, 5))
     fileManager.write(blockId, page)
 
     val readPage = Page(256)
     fileManager.read(blockId, readPage)
-    assertEquals(readPage.getInt(0), 42)
-//    assertEquals(readPage.getString(4), "hello")
-//    assertEquals(readPage.getBytes(10).toList, List[Byte](1, 2, 3, 4, 5))
+    assertEquals(readPage.getInt(0), Int.MaxValue)
+    assertEquals(readPage.getString(4), "hello world")
+    assertEquals(readPage.getBytes(19).toList, List[Byte](1, 2, 3, 4, 5))
+
+    println(readPage.toString)
   }
 }

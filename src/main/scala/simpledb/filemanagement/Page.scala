@@ -38,6 +38,15 @@ class Page private (bb: ByteBuffer) {
     bb.position(0)
     bb
   }
+
+  override def toString(): String = {
+    val sb = new StringBuilder
+    for (i <- 0 until bb.limit()) {
+      sb.append(f"${bb.get(i)}%02x")
+      if (i < bb.limit() - 1) sb.append(",")
+    }
+    sb.toString()
+  }
 }
 
 object Page {
