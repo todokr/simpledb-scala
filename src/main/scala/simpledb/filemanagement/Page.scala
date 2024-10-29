@@ -10,6 +10,10 @@ class Page private (bb: ByteBuffer) {
 
   def setInt(offset: Int, n: Int): Unit = bb.putInt(offset, n)
 
+  def getLong(offset: Int): Long = bb.getLong(offset)
+
+  def setLong(offset: Int, n: Long): Unit = bb.putLong(offset, n)
+
   def getBytes(offset: Int): Array[Byte] = {
     bb.position(offset)
     val length = bb.getInt()
