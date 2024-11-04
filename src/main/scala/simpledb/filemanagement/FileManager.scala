@@ -6,8 +6,8 @@ import java.io.RandomAccessFile
 import scala.collection.mutable
 
 class FileManager private (
+  val blockSize: Int,
   private val dbDirectory: File,
-  private val blockSize: Int,
   private val isNew: Boolean,
   private val openFiles: mutable.Map[String, RandomAccessFile] = mutable.Map()
 ) {
@@ -57,7 +57,7 @@ class FileManager private (
     }
   }
 
-  private def size(fileName: String): Int = try {
+  def size(fileName: String): Int = try {
     val f = getFile(fileName)
     (f.length() / blockSize).toInt
   } catch {
@@ -74,7 +74,7 @@ object FileManager {
       file.delete()
     }
 
-    new FileManager(dbDirectory, blockSize, isNew)
+    new FileManager(blockSize, dbDirectory,isNew)
   }
 }
 
