@@ -20,7 +20,7 @@ class LogManager (
       currentBlock
     }
 
-  private var latestLSN= 0;
+  private var latestLSN = 0;
   private var lastSavedLSN = 0;
 
   def flush(lsn: Int): Unit = {

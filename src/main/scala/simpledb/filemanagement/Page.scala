@@ -57,7 +57,7 @@ object Page {
   private val Charset = StandardCharsets.US_ASCII
 
   /** A constractor for creating data buffers */
-  private[filemanagement] def apply(blockSize: Int): Page = {
+  def apply(blockSize: Int): Page = {
     val bb = ByteBuffer.allocateDirect(blockSize)
     new Page(bb)
   }

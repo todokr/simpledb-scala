@@ -6,10 +6,10 @@ import java.io.RandomAccessFile
 import scala.collection.mutable
 
 class FileManager private (
-  val blockSize: Int,
-  private val dbDirectory: File,
-  private val isNew: Boolean,
-  private val openFiles: mutable.Map[String, RandomAccessFile] = mutable.Map()
+    val blockSize: Int,
+    private val dbDirectory: File,
+    private val isNew: Boolean,
+    private val openFiles: mutable.Map[String, RandomAccessFile] = mutable.Map()
 ) {
 
   def read(block: BlockId, page: Page): Unit = this.synchronized {
@@ -18,7 +18,8 @@ class FileManager private (
       f.seek(block.blockNum * blockSize)
       f.getChannel.read(page.contents)
     } catch {
-      case e: Exception => throw new RuntimeException(s"cannot read block $block", e)
+      case e: Exception =>
+        throw new RuntimeException(s"cannot read block $block", e)
     }
   }
 
@@ -28,7 +29,8 @@ class FileManager private (
       f.seek(block.blockNum * blockSize)
       f.getChannel.write(page.contents)
     } catch {
-      case e: Exception => throw new RuntimeException(s"cannot write block $block", e)
+      case e: Exception =>
+        throw new RuntimeException(s"cannot write block $block", e)
     }
   }
 
@@ -42,7 +44,8 @@ class FileManager private (
       val b = new Array[Byte](blockSize)
       f.write(b)
     } catch {
-      case e: Exception => throw new RuntimeException(s"cannot append block $newBlockId", e)
+      case e: Exception =>
+        throw new RuntimeException(s"cannot append block $newBlockId", e)
     }
     newBlockId
   }
@@ -61,7 +64,8 @@ class FileManager private (
     val f = getFile(fileName)
     (f.length() / blockSize).toInt
   } catch {
-    case e: Exception => throw new RuntimeException(s"cannot access $fileName", e)
+    case e: Exception =>
+      throw new RuntimeException(s"cannot access $fileName", e)
   }
 }
 
@@ -74,8 +78,6 @@ object FileManager {
       file.delete()
     }
 
-    new FileManager(blockSize, dbDirectory,isNew)
+    new FileManager(blockSize, dbDirectory, isNew)
   }
 }
-
-
