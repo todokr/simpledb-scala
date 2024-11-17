@@ -22,7 +22,7 @@ class BufferManager(
     bufferpool.filter(_.modifyingTx == txnum).foreach(_.flush())
   }
 
-  def unpin(buff: Buffer): Unit = {
+  def unpin(buff: Buffer): Unit = synchronized {
     buff.unpin()
     if (!buff.isPinned) {
       numAvailable = numAvailable + 1
@@ -30,16 +30,18 @@ class BufferManager(
     }
   }
 
-  def pin(blk: BlockId): Buffer = try {
-    val timestamp = System.currentTimeMillis()
-    val buff = tryToPin(blk)
-    while (buff.isEmpty && !waitingTooLong(timestamp)) {
-      wait(MaxTime)
+  def pin(blk: BlockId): Buffer = synchronized {
+    try {
+      val timestamp = System.currentTimeMillis()
       val buff = tryToPin(blk)
+      while (buff.isEmpty && !waitingTooLong(timestamp)) {
+        wait(MaxTime)
+        val buff = tryToPin(blk)
+      }
+      buff.getOrElse(throw new BufferAbortException)
+    } catch {
+      case _: InterruptedException => throw new BufferAbortException
     }
-    buff.getOrElse(throw new BufferAbortException)
-  } catch {
-    case _: InterruptedException => throw new BufferAbortException
   }
 
   private def waitingTooLong(starttime: Long): Boolean = {
@@ -65,6 +67,7 @@ class BufferManager(
   }
 
   private def chooseUnpinnedBuffer(): Option[Buffer] = {
+    // Naive implementation
     bufferpool.find(buff => !buff.isPinned)
   }
 }
